@@ -6,9 +6,11 @@ export default function MyComponent(props: { fullName: string }) {
     setState("test");
   };
 
-  console.log("test");
   return (
     <>
+      <h1 className="text-3xl font-bold underline">
+        Hello world!
+      </h1>
       {props.fullName} {state}
       <button onClick={test} type="button">
         test
