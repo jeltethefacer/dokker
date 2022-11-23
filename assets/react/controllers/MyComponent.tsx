@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 export default function MyComponent(props: { fullName: string }) {
   const [state, setState] = React.useState("lawl");
@@ -8,9 +8,11 @@ export default function MyComponent(props: { fullName: string }) {
 
   console.log("test");
   return (
-    <div>
-      Hello {props.fullName} {state}
-      <button onClick={test}>test</button>
-    </div>
+    <>
+      {props.fullName} {state}
+      <button onClick={test} type="button">
+        test
+      </button>
+    </>
   );
 }

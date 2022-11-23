@@ -17,6 +17,7 @@
         "react"
     ],
     "rules": {
-      "no-console": "error"
+      "no-console": 2,
+      "@shopify/jsx-no-hardcoded-content": 0
     }
 }

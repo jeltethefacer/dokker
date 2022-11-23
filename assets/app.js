@@ -13,6 +13,5 @@ import "./styles/app.css";
 import "./bootstrap";
 
 registerReactControllerComponents(
-
-    require.context("./react/controllers", true, /\.(j|t)sx?$/) /** @eslin
+  require.context("./react/controllers", true, /\.(j|t)sx?$/) // eslint-disable-line no-undef
 );
