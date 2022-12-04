@@ -11,6 +11,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -40,16 +41,17 @@ class ImportMembers
     }
 
     /**
+     * @param OutputInterface|null $output
      * @return bool
-     * @throws NonUniqueResultException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws ClientExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NonUniqueResultException
+     * @throws NotFoundExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function importMembers(): bool
+    public function importMembers(?OutputInterface $output = null): bool
     {
         ini_set('max_execution_time', '300'); //300 seconds = 5 minutes
         $page = 1;
@@ -92,6 +94,7 @@ class ImportMembers
                     $user->setCongressusUserInformation($congressus_user_information);
                     $this->user_repository->save($user, true);
                 }
+                $output?->writeln('Imported ' . $congressus_user_information->getFirstName() . ' (' . $congressus_user_information->getCongressusUserId() . ')');
             }
             $page ++;
         }  while ($members_response->hasNext());
