@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DokController!{% endblock %}
+
+{% block body %}
+    <div {{ react_component('Dok/DokOrderComponent', { 'products': products }) }}></div>
+{% endblock %}

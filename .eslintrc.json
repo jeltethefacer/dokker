@@ -18,6 +18,43 @@
     ],
     "rules": {
       "no-console": 2,
-      "@shopify/jsx-no-hardcoded-content": 0
+      "@shopify/jsx-no-hardcoded-content": 0,
+      "@typescript-eslint/naming-convention": [
+        2,
+        {
+          "selector": "default",
+          "format": ["camelCase", "PascalCase"],
+          "leadingUnderscore": "allow",
+          "trailingUnderscore": "allow"
+        },
+        {
+          "selector": "variable",
+          "format": ["camelCase", "UPPER_CASE"],
+          "leadingUnderscore": "allow",
+          "trailingUnderscore": "allow"
+        },
+        {
+          "selector": "typeLike",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "interface",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "interface",
+          "format": ["PascalCase"]
+        },
+        {
+          "selector": "typeProperty",
+          "format": ["snake_case"],
+          "leadingUnderscore": "allow"
+        },
+        {
+          "selector": "objectLiteralProperty",
+          "format": ["snake_case"],
+          "leadingUnderscore": "allow"
+        }
+      ]
     }
 }

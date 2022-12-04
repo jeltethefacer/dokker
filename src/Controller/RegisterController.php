@@ -31,8 +31,6 @@ class RegisterController extends AbstractController
             $user,
             $request->request->get('_password')
         );
-        $user->setPassword($hashed_password);
-
 
         $user->setPassword($hashed_password);
         $user_repository->save($user, true);

@@ -28,6 +28,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Association $association = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?CongressusUserInformation $congressus_user_information = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -96,5 +103,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getAssociation(): ?Association
+    {
+        return $this->association;
+    }
+
+    public function setAssociation(?Association $association): self
+    {
+        $this->association = $association;
+
+        return $this;
+    }
+
+    public function getCongressusUserInformation(): ?CongressusUserInformation
+    {
+        return $this->congressus_user_information;
+    }
+
+    public function setCongressusUserInformation(?CongressusUserInformation $congressus_user_information): self
+    {
+        $this->congressus_user_information = $congressus_user_information;
+
+        return $this;
     }
 }

@@ -8,6 +8,7 @@
         "@symfony/stimulus-bridge": "^3.2.0",
         "@symfony/ux-react": "file:vendor/symfony/ux-react/Resources/assets",
         "@symfony/webpack-encore": "^4.0.0",
+        "@tailwindcss/forms": "^0.5.3",
         "@types/react": "^18.0.25",
         "@typescript-eslint/eslint-plugin": "^5.44.0",
         "@typescript-eslint/parser": "^5.44.0",
@@ -40,6 +41,7 @@
         "eslint-fix": "eslint ./assets --fix"
     },
     "dependencies": {
+        "axios": "^1.2.0",
         "babel-preset-react": "^6.24.1",
         "prop-types": "^15.8.1",
         "react": "^18.0",
