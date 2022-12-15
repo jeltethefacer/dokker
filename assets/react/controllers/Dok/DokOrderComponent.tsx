@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
+import Select, { GroupBase, Options } from "react-select";
+import {
+  OptionsOrGroups,
+  SingleValue,
+} from "react-select/dist/declarations/src/types";
+import { ValueType } from "tailwindcss/types/config";
+import Option from "react-select/dist/declarations/src/components/Option";
 
 interface ProductSearchParameters {
   name: string | null;
@@ -14,6 +21,7 @@ interface Product {
 }
 
 interface Cart {
+  user_id: number | null;
   cart_items: CartItem[];
 }
 
@@ -22,10 +30,37 @@ interface CartItem {
   quantity: number;
 }
 
-export default function DokOrderComponent(props: { products: Product[] }) {
-  const [cart, setCart] = useState<Cart>({
-    cart_items: [],
-  });
+interface User {
+  id: number;
+  name: string | null;
+  image_url: string | null;
+}
+
+const defaultCart: Cart = {
+  cart_items: [],
+  user_id: null,
+};
+
+interface UserOption {
+  value: number;
+  label: string;
+}
+
+export default function DokOrderComponent(props: {
+  products: Product[];
+  users: User[];
+}) {
+  const [cart, setCart] = useState<Cart>(defaultCart);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const options: UserOption[] = props.users.map(
+    (user: User): { value: number; label: string } => {
+      return {
+        value: user.id,
+        label: user.name,
+      };
+    }
+  );
 
   const addProduct = (productId: number) => {
     setCart((prevCart) => {
@@ -58,35 +93,62 @@ export default function DokOrderComponent(props: { products: Product[] }) {
     });
   };
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-3">
-      <div className="grid grid-cols-4 gap-4 col-span-2">
-        {props.products.map((product: Product) => {
-          return (
-            <div
-              key={product.id}
-              className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
-              onClick={(): void => addProduct(product.id)}
-              onKeyDown={(): void => addProduct(product.id)}
-            >
-              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                {product.name}
-              </h5>
+  const onUserChange = (newValue: UserOption | null): void => {
+    setCart({ ...cart, user_id: newValue.value });
+  };
 
-              <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                {product.price_minor_amount}
-              </p>
-              <button
-                type="button"
-                className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+  const onCreateOrder = (): void => {
+    if (!cart.user_id) {
+      setErrorMessage("Please enter a user.");
+      return;
+    }
+    if (cart.cart_items.length === 0) {
+      setErrorMessage("Please enter a product.");
+      return;
+    }
+
+    setErrorMessage(null);
+    axios
+      .post("/order", cart)
+      .then(() => {
+        setCart(defaultCart);
+      })
+      .catch(() => {
+        setErrorMessage("Something went wrong please try again.");
+      });
+  };
+
+  return (
+    <div className="grid grid-cols-3">
+      <div className="col-span-2">
+        <div className="grid grid-cols-4 gap-4">
+          {props.products.map((product: Product) => {
+            return (
+              <div
+                key={product.id}
+                className="col-span-1 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
+                onClick={(): void => addProduct(product.id)}
+                onKeyDown={(): void => addProduct(product.id)}
               >
-                Add
-              </button>
-            </div>
-          );
-        })}
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {product.name}
+                </h5>
+
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  {product.price_minor_amount}
+                </p>
+                <button
+                  type="button"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Add
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <>
+      <div className="col-span-1">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -148,7 +210,29 @@ export default function DokOrderComponent(props: { products: Product[] }) {
             </tr>
           </tbody>
         </table>
-      </>
+        <Select
+          className="mt-2"
+          options={options}
+          onChange={onUserChange}
+          value={options.filter((option) => option.value === cart.user_id)}
+        />
+        {errorMessage && (
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-2 rounded relative"
+            role="alert"
+          >
+            <span className="block sm:inline">{errorMessage}</span>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 mt-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          onClick={onCreateOrder}
+        >
+          Create order
+        </button>
+      </div>
     </div>
   );
 }

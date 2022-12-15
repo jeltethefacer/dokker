@@ -45,6 +45,7 @@
         "babel-preset-react": "^6.24.1",
         "prop-types": "^15.8.1",
         "react": "^18.0",
-        "react-dom": "^18.0"
+        "react-dom": "^18.0",
+        "react-select": "^5.7.0"
     }
 }

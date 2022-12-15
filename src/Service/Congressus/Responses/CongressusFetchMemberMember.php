@@ -14,6 +14,11 @@ class CongressusFetchMemberMember
         $this->data = $data;
     }
 
+    public function getProfilePicture(): ?string
+    {
+        return $this->data['profile_picture'] ?? null;
+    }
+
     /**
      * @return array
      */

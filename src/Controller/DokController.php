@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\Searchers\ProductSearcher;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,9 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class DokController extends AbstractController
 {
     #[Route('/dok', name: 'app_dok')]
-    public function index(ProductSearcher $product_searcher): Response
+    public function index(ProductSearcher $product_searcher, UserRepository $user_repository): Response
     {
         $products = $product_searcher->getResults();
+        $users = $user_repository->findAll();
 
         return $this->render('dok/index.html.twig', [
             'controller_name' => 'DokController',
@@ -27,6 +30,19 @@ class DokController extends AbstractController
                     ];
                 },
                 $products
+            ),
+            'users' => array_map(
+                function (User $user) {
+                    return [
+                        'id' => $user->getId(),
+                        'name' => $user->getCongressusUserInformation()?->getFirstName() .
+                            ' ' .
+                            ($user->getCongressusUserInformation()?->getPrimaryLastNamePrefix() ? ($user->getCongressusUserInformation()?->getPrimaryLastNamePrefix() . ' ') : '') .
+                            $user->getCongressusUserInformation()?->getPrimaryLastName(),
+                        'image_url' => $user->getCongressusUserInformation()?->getIban(),
+                    ];
+                },
+                $users
             )
         ]);
     }
